@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html ng-app="LottoPicker">
+    <head>
+        <title>Lotto Picker</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/css/bootstrap.min.css" integrity="sha512-oc9+XSs1H243/FRN9Rw62Fn8EtxjEYWHXRvjS43YtueEewbS6ObfXcJNyohjHqVKFPoXXUxwc+q1K7Dee6vv9g==" crossorigin="anonymous" />
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/angular.js/1.8.2/angular.min.js" integrity="sha512-7oYXeK0OxTFxndh0erL8FsjGvrl2VMDor6fVqzlLGfwOQQqTbYsGPv4ZZ15QHfSk80doyaM0ZJdvkyDcVO7KFA==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg==" crossorigin="anonymous"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.5.3/js/bootstrap.min.js" integrity="sha512-8qmis31OQi6hIRgvkht0s6mCOittjMa9GMqtK9hes5iEQBQE/Ca6yGE5FsW36vyipGoWQswBj/QBm2JR086Rkw==" crossorigin="anonymous"></script>
+        <script src="./app.js"></script>
+    </head>
+    <body ng-controller="mainController">
+        <hr>
+        <div class="text-center jumbotron">
+            <h1>Mega Millions App</h1>
+            <a class="text-secondary">By Brian McKeown</a>
+            <br>
+            <button ng-hide="dataPulled" class="btn btn-lg btn-primary text-center" ng-click="pullData()">Pull Latest Mega Millions Data</button>
+            <button ng-show="dataPulled && !counted" class="btn btn-lg btn-success text-center" ng-click="generate()">Generate Most Probable Winning Numbers</button>
+        </div>
+        <div ng-show="dataPulled">
+            <h1 class="text-center">Latest Winning Numbers</h1>
+            <h4 class="text-center">{{latestDrawDate()}}</h4>
+            <h2 class="text-center text-primary">{{latestWinningNumbers()}}</h2>
+        </div>
+        <div ng-show="counted" class="text-center">
+            <hr>
+            <h1 class="text-center">Most Probable To Win:</h1>
+            <h2 class="text-center text-success">{{luckyString}}</h2>
+            <button ng-hide="dataButtonClicked" class="btn btn-dark" ng-click="dataButtonClick()">View Explanation</button>
+            <button ng-show="dataButtonClicked" class="btn btn-dark" ng-click="dataButtonClick()">Hide Explanation</button>
+            <button ng-hide="historyButtonClicked" class="btn btn-dark" ng-click="historyButtonClick()">View Drawing History</button>
+            <button ng-show="historyButtonClicked" class="btn btn-dark" ng-click="historyButtonClick()">Hide Drawing History</button>
+            <div class="container" ng-show="dataButtonClicked">
+                <p>This set of numbers was chosen based on the counts of numbers picked in the game's history since October 28, 2017 
+                (when Mega Millions changed the rules to choosing from 70 regular numbers and 25 megaball choices.</p>
+                <p>The numbers with the lowest count are considered "hot" because in the world of probability, they are most likely to be selected sooner than others with higher counts.
+                    The below charts represent the amount of times each number has been drawn since the late Oct 2017. The 
+                    numbers with the lowest counts are more probable to be drawn next (or considered "hot" numbers). 
+                </p>
+                <div class="container">
+                    <div class="row">
+                    <div class="col-sm-6">
+                        <h3>Numbers Count</h3>
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Number</th>
+                            <th>Count</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="number in frontNumArray">
+                            <td>{{number.number}}</td>
+                            <td>{{number.count}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <div class="col-sm-6">
+                    <h3>MegaBall Count</h3>
+                    <table class="table table-sm">
+                        <thead>
+                            <tr>
+                                <th>Number</th>
+                                <th>Count</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr ng-repeat="number in frontMegaBallArray">
+                                <td>{{number.number}}</td>
+                                <td>{{number.count}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                </div>
+            </div>
+        </div>   
+        <div class="container" ng-show="historyButtonClicked">
+            <h3>Drawing History</h3>
+            <table class="table table-sm">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Winning Numbers</th>
+                        <th>Mega Ball</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="winner in megaMillionsNumbersData">
+                        <td>{{frontDateFormatter(winner.draw_date)}}</td>
+                        <td>{{winner.winning_numbers}}</td>
+                        <td>{{winner.mega_ball}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>     
+    </body>
+</html>
